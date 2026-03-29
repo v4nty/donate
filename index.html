@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержать проект</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Базовые настройки и премиальный темный фон */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Контейнер для падающих денег */
+        #money-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .money-flake {
+            position: absolute;
+            font-size: 2rem;
+            animation: fall linear infinite, spin 3s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh); }
+            100% { transform: translateY(110vh); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Основной контент */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        /* Золотой градиентный текст */
+        h1.gold-text {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(252, 246, 186, 0.2);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 10px rgba(252, 246, 186, 0.2); }
+            to { text-shadow: 0 0 30px rgba(252, 246, 186, 0.6); }
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+
+        /* Карточка доната (Glassmorphism) */
+        .donate-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.1) inset;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 60px;
+        }
+
+        .donate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.3) inset;
+        }
+
+        .bank-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #28a745; /* Цвет Сбера */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
+        .card-number-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #bf953f, #aa771c);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(170, 119, 28, 0.4);
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(170, 119, 28, 0.6);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Секция статей */
+        .articles-section {
+            text-align: left;
+        }
+
+        .articles-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .article-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .article-card h3 {
+            margin-top: 0;
+            color: #fcf6ba;
+        }
+
+        .article-card p {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Уведомление о копировании */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #28a745;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 15px;
+            position: fixed;
+            z-index: 10;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="money-background"></div>
+
+    <div id="toast">Номер карты скопирован!</div>
+
+    <div class="container">
+        <h1 class="gold-text">Поддержать проект</h1>
+        <p class="subtitle">Это необязательно, по желанию</p>
+
+        <div class="donate-card">
+            <div class="bank-name">Сбер</div>
+            <div class="card-number-wrapper">
+                <div class="card-number" id="cardNumber">2202 2088 0474 4689</div>
+                <button class="copy-btn" onclick="copyCard()">Копировать</button>
+            </div>
+            <p style="color: #aaa; margin: 0; font-size: 0.9rem;">Спасибо за вашу поддержку! Каждая копейка идет на развитие.</p>
+        </div>
+
+        <div class="articles-section">
+            <h2 class="articles-title">Свежие статьи</h2>
+            <div class="article-grid">
+                
+                <div class="article-card">
+                    <h3>Обновление проекта v1.0</h3>
+                    <p>Краткое описание того, что было добавлено в последнем крупном обновлении. Новые фичи, фиксы багов и планы на будущее.</p>
+                </div>
+
+                <div class="article-card">
+                    <h3>Как мы создавали дизайн</h3>
+                    <p>История о том, как подбиралась цветовая палитра, почему был выбран именно такой стиль и какие технологии использовались.</p>
+                </div>
+
+                <div class="article-card">
+                    <h3>Планы на следующий месяц</h3>
+                    <p>Спойлеры новых механик, инсайды из разработки и ответы на самые частые вопросы пользователей.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функция копирования номера карты
+        function copyCard() {
+            const cardNumber = "2202 2088 0474 4689";
+            navigator.clipboard.writeText(cardNumber).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+            });
+        }
+
+        // Анимация падающих денег
+        function createMoney() {
+            const moneyContainer = document.getElementById('money-background');
+            const icons = ['💵', '💰', '🪙', '💸'];
+            const numberOfCoins = 40; // Количество падающих элементов
+
+            for (let i = 0; i < numberOfCoins; i++) {
+                let flake = document.createElement('div');
+                flake.className = 'money-flake';
+                // Случайная иконка
+                flake.innerText = icons[Math.floor(Math.random() * icons.length)];
+                
+                // Случайная позиция по горизонтали
+                flake.style.left = Math.random() * 100 + 'vw';
+                
+                // Случайная скорость падения
+                let duration = Math.random() * 5 + 5; // от 5 до 10 секунд
+                flake.style.animationDuration = duration + 's, 3s';
+                
+                // Случайная задержка (чтобы падали не одновременно)
+                flake.style.animationDelay = Math.random() * 5 + 's, 0s';
+                
+                // Случайный размер
+                flake.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
+
+                moneyContainer.appendChild(flake);
+            }
+        }
+
+        // Запускаем генерацию денег при загрузке страницы
+        window.onload = createMoney;
+    </script>
+</body>
+</html>
