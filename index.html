@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Donation System</title>
+    <style>
+        /* ОСНОВНЫЕ СТИЛИ (PREMIUM DARK) */
+        :root {
+            --gold: #ffcc00;
+            --gold-light: #fff5ca;
+            --gold-glow: rgba(255, 204, 0, 0.4);
+            --dark-bg: #050505;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Чтобы деньги не создавали прокрутку */
+        }
+
+        /* ХОЛСТ ДЛЯ АНИМАЦИИ ДЕНЕГ */
+        #moneyCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ГЛАВНАЯ КАРТОЧКА */
+        .premium-card {
+            position: relative;
+            z-index: 10;
+            width: 380px;
+            padding: 40px;
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(20px); /* Эффект дорогого стекла */
+            border-radius: 40px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 
+                        0 0 30px var(--gold-glow);
+            animation: floatCard 5s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .premium-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 204, 0, 0.6);
+        }
+
+        /* ИКОНКА КОРОНЫ */
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow: 0 0 25px var(--gold);
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 24px;
+            margin: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.description {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* БЛОК С КАРТОЙ */
+        .card-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-label {
+            color: var(--gold);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card-number {
+            color: #fff;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .copy-button {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #fff;
+        }
+
+        /* АНИМАЦИИ */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0) rotateX(2deg); }
+            50% { transform: translateY(-15px) rotateX(-2deg); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 204, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #555;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="moneyCanvas"></canvas>
+
+    <div class="premium-card">
+        <div class="icon-wrapper">👑</div>
+        <h1>Поддержать проект</h1>
+        <p class="description">Это необязательно, по желанию</p>
+
+        <div class="card-box">
+            <span class="card-label">Sberbank Russia</span>
+            <span class="card-number" id="num">2202 2088 0474 4689</span>
+            <button class="copy-button" onclick="copyText()">Копировать номер</button>
+        </div>
+
+        <div class="footer-note">ДЕНЬГИ ИДУТ НА РАЗВИТИЕ СИСТЕМЫ</div>
+    </div>
+
+    <script>
+        // ЛОГИКА ПАДАЮЩИХ ДЕНЕГ
+        const canvas = document.getElementById('moneyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const icons = ['💵', '💰', '💸', '💎', '✨'];
+        const particles = [];
+
+        class Money {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 25 + 15;
+                this.speed = Math.random() * 2 + 1;
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 2 - 1;
+                this.icon = icons[Math.floor(Math.random() * icons.length)];
+            }
+
+            update() {
+                this.y += this.speed;
+                this.angle += this.spin;
+                if (this.y > canvas.height) {
+                    this.y = -50;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle * Math.PI / 180);
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText(this.icon, 0, 0);
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 60; i++) {
+                particles.push(new Money());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // КОПИРОВАНИЕ
+        function copyText() {
+            const text = document.getElementById('num').innerText;
+            navigator.clipboard.writeText(text.replace(/\s/g, ''));
+            
+            const btn = document.querySelector('.copy-button');
+            btn.innerText = 'СКОПИРОВАНО!';
+            btn.style.background = '#00ff00';
+            
+            setTimeout(() => {
+                btn.innerText = 'Копировать номер';
+                btn.style.background = '#ffcc00';
+            }, 2000);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
